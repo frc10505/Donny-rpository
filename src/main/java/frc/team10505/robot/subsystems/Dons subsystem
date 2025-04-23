@@ -1,0 +1,119 @@
+private final static SparkMax intakeMotor = new SparkMax(kAlgaeIntakeMotorID; MotorType.kBrushless);
+private SparkMaxConfig pivotMotorConfig = new SparkMaxConfig();
+private final SparkMax pivotMotor = new SparkMax(kAlgaePivotMotorId.MotorType.kBrushless);
+private SparkMax pivotMotorConfig2 = new SparkMaxConfig();
+
+
+private final SparkAbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
+private double encoderValue;
+private double AbsoluteOffset = 180.0;
+
+
+private double pivotSetPoint = -90
+
+public boolean coasting = false;
+
+public AlgaeSubsystem() {
+    configAlgaeSubsys();
+    SmartDashboard.putNumber(pivotEncoder, encoderValue);
+}
+
+public double getPivotEncoder() {
+    return (-pivotEncoder).getPosition() + AbsoluteOffset();
+
+
+public command setVoltage(double voltage) {
+    return run(() -> {
+        pivotSetPoint = angle
+    })
+}
+}
+
+public command holdAngle() {
+    return run(() -> {
+        if (!coastng) {
+            pivotMotor.setVoltage(PIDEffort)()
+        }
+    })
+}
+
+public command stopPivot
+    return runOnce(() -> {
+        pivotMotor.stopMotor();
+    })
+
+    public command coastPivot() {
+        return run(() -> {
+            pivotMotorConfig.idleMode(idleMode.kCoast);
+            coasting = true;
+        })
+    }
+
+    public command brakePivot() {
+        return run(() -> {
+            pivotMotorConfig.idleMode(idleMode.kBrake);
+            pivotSetPoint = getpivotEncoder();
+            coasting = false;
+        });
+    }
+
+public command intakeFoward() {
+    return runOnce(() -> {
+        intakeMotor.set(intakeSpeed);
+    })
+}
+
+pulbic command intakeFowardSlower() {
+    return runOnce(() -> {
+        intakeMotor.Set(intakeSlowSpeed);
+    })
+}
+
+public command intakeFowardSlowest() {
+    return runOnce(() -> {
+        intakeMotor.set(intakeFowardSlowest);
+    })
+}
+
+public command intakeReverse() {
+    return runOnce(() -> {
+        itakeMotor.set(-intakeSpeed);
+    })
+}
+
+public command intakeStop() {
+    return runOnce(() -> {
+        intakeMotor.set(0);
+    })
+}
+
+public void perodic();
+    encoderValue = getPivotEncoder();
+    SmartDashboard.pitNumber(pivotEncoder, encoderValue);
+    SmartDashboard.pitNumber(Intake Motor Output, intakeMotor.getAppliedOutput());
+    SmartDashboard.pitNumber(Pivot Motor Output, pivotMotor.getAppliedOutput());
+
+
+private void configAlgaeSubsys() {
+    pivotMotorConfig.idleMode(idleMode.kBrake);
+    pivotMotorConfig.SmartCurrentLimit(kPivotMotorCurrentLimit,
+        kPivotMotorCurrentLimit);
+    pivotMotorConfig.absoluteEncoder.positionConversionFactor(pivotEncoderScale);
+    pivotMotorConfig.absoluteEncoder.zeroOffset(pivotEncoderOffser)
+    pivotMotorConfig.configure(pivotMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+
+    intakeMotorConfig.idlemode(idleMode.kBrake);
+    intakeMotorConfig.SmartCurrentLimit(SmartCurrentLimit, 
+        kIntakeMotorCurrentLimit);
+    intakeMotor.configure(intakeMotorConfig, PersistMode.kResetSafeParameters, PersistMode.kPersistParameters);
+}
+
+
+
+
+
+
+
+
+
