@@ -3,7 +3,10 @@ package frc.team10505.robot.subsystems;
 import java.util.Queue;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.core.CoreTalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -12,18 +15,15 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-@SuppressWarnings("unused")
+
 public class ElevatorSubsystem extends SubsystemBase {
     // Motors
-    // public final TalonFx elevatorMotor = new TalonFx(kElevatorMotorId);
-    public int kElevatorMotorId;
-    public final TalonFX elevator = new TalonFX(kElevatorMotorId, "KingKan");
-    public int kElevatorFollowerMotorId;
-
-    // public final TalonFx elevatorFollowerMotor = new
-    // TalonFx(kElevatorFollowerMotorId);
+    public int kElevatorMotorId = (0);
+    public final TalonFX elevatorMotor = new TalonFX(kElevatorMotorId, "KingKan");
+    public int kElevatorFollowerMotorId = 9;
     public final TalonFX elevatorFollowerMotor = new TalonFX(kElevatorFollowerMotorId, "KingKan");
 
     // Encoders, Real and simulated
@@ -31,68 +31,54 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private double totalEffort;
     // operator.interface
-    public final SendableChooser<Double> elevatorHeight = new SendableChooser<>();
-    private double height = 0.0;
-    public double KP;
-    public double KI;
-    public double KD;
 
+    private double height = 0.0;
+    
     // Controls, Actual
-    private final PIDController elevatorController = new PIDController(KP, KI, KD);
-    public double KS;
-    public double KG;
-    public double KV;
-    private double KA;
-    private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(KS, KG, KV, KA);
+    private final PIDController elevatorController = new PIDController(0, 0, 0);
+    private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0, 0, 0.1, 0.1);
 
     public boolean usePID = true;
-    public CoreTalonFX elevatorMotor;
-    public double kElevatorMotorCurrentLimit;
-    private TalonFXConfiguration limitConfigs;
-    public double heght;
-    private double newHeight;
-    public double MathUntil;
+    public double kElevatorMotorCurrentLimit = 30;
 
     /* Constructor, runs everthing inside during initialization */
     public ElevatorSubsystem() {
         elevatorMotor.setPosition(0.0);
-        TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
         // set current limits
-        limitConfigs = new TalonFXConfiguration();
-        limitConfigs.CurrentLimits.StatorCurrentLimit = kElevatorMotorCurrentLimit;
-        limitConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+        var limitConfigs = new CurrentLimitsConfigs();
+        limitConfigs.StatorCurrentLimit = kElevatorMotorCurrentLimit;
+        limitConfigs.StatorCurrentLimitEnable = true;
 
-        motorConfig.NeutralMode = NeutralModeValue.Brake;
+       // motorConfig = MotorOutputConfigs.NeutralModeValue.Brake;
+       var motorConfig = new MotorOutputConfigs();
+       motorConfig.NeutralMode = NeutralModeValue.Brake;
+
         elevatorMotor.getConfigurator().apply(motorConfig);
         elevatorMotor.getConfigurator().apply(limitConfigs);
 
-        motorConfig.NeutralMode = NeutralModeValue.Brake;
         elevatorFollowerMotor.getConfigurator().apply(motorConfig);
         elevatorFollowerMotor.getConfigurator().apply(limitConfigs);
         elevatorFollowerMotor.setControl(new Follower(elevatorMotor.getDeviceID(), false));
-
+    }
     
 
     /* commands to referense */
     // changes our setpoint, which changes our pid calcuations therefore effort to
     // the motor, which happens periodically
-    public edu.wpi.first.wpilibj2.command.Command setHeight(double newHeight) {
+    public Command setHeight(double newHeight) {
         return runOnce(() -> {
             height = newHeight;
         });
     }
 
     public Command setMotor(double voltage){
-        return runEnd(() -> {
+        return runOnce(() -> {
                     usePID = false;
-                    elevator.setVoltage(voltage);
+                    elevatorMotor.setVoltage(voltage);
                 });
 
             }
-            private Command runEnd(Runnable runnable) {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'runEnd'");
 
             // ONLY to use for testing motor direction
             // public Command testElevator(double voltage){
@@ -107,6 +93,12 @@ public class ElevatorSubsystem extends SubsystemBase {
             public double getElevatorEncoder () {
                 return (elevatorMotor.getRotorPosition().getValueAsDouble());  
             }
+
+            // public boolean isNearGoal() {
+
+            // }
+        }
+        
 
 
         
