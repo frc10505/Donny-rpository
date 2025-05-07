@@ -9,7 +9,7 @@ private double encoderValue;
 private double AbsoluteOffset = 180.0;
 
 
-private double pivotSetPoint = -90
+private double pivotSetPoint = -90;
 
 public boolean coasting = false;
 
@@ -22,34 +22,34 @@ public double getPivotEncoder() {
     return (-pivotEncoder).getPosition() + AbsoluteOffset();
 
 
-public command setVoltage(double voltage) {
-    return run(() -> {
+public Command setVoltage(double voltage) {
+    return run(() -> {+
         pivotSetPoint = angle
-    })
+    });
 }
 }
 
-public command holdAngle() {
+public Command holdAngle() {
     return run(() -> {
         if (!coastng) {
             pivotMotor.setVoltage(PIDEffort)()
         }
-    })
+    });
 }
 
-public command stopPivot
+public Command stopPivot
     return runOnce(() -> {
         pivotMotor.stopMotor();
-    })
+    });
 
-    public command coastPivot() {
+    public Command coastPivot() {
         return run(() -> {
             pivotMotorConfig.idleMode(idleMode.kCoast);
             coasting = true;
-        })
+        });
     }
 
-    public command brakePivot() {
+    public Command brakePivot() {
         return run(() -> {
             pivotMotorConfig.idleMode(idleMode.kBrake);
             pivotSetPoint = getpivotEncoder();
@@ -57,34 +57,34 @@ public command stopPivot
         });
     }
 
-public command intakeFoward() {
+public Command intakeFoward() {
     return runOnce(() -> {
         intakeMotor.set(intakeSpeed);
-    })
+    });
 }
 
-pulbic command intakeFowardSlower() {
+public Command intakeFowardSlower() {
     return runOnce(() -> {
         intakeMotor.Set(intakeSlowSpeed);
-    })
+    });
 }
 
-public command intakeFowardSlowest() {
+public Command intakeFowardSlowest() {
     return runOnce(() -> {
         intakeMotor.set(intakeFowardSlowest);
-    })
+    });
 }
 
-public command intakeReverse() {
+public Command intakeReverse() {
     return runOnce(() -> {
         itakeMotor.set(-intakeSpeed);
-    })
+    });
 }
 
-public command intakeStop() {
+public Command intakeStop() {
     return runOnce(() -> {
         intakeMotor.set(0);
-    })
+    });
 }
 
 public void perodic();
