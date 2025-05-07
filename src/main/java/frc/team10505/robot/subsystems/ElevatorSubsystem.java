@@ -88,29 +88,26 @@ public class ElevatorSubsystem extends SubsystemBase {
                     usePID = false;
                     elevator.setVoltage(voltage);
                 });
+
             }
             private Command runEnd(Runnable runnable) {
                 // TODO Auto-generated method stub
                 throw new UnsupportedOperationException("Unimplemented method 'runEnd'");
-            }
-            () -> {
-                ((TalonFX) elevatorMotor).setVoltage(0);
-                usePID = true;
-            }
 
             // ONLY to use for testing motor direction
             // public Command testElevator(double voltage){
             // return runEnd(() -> {
-            // elevatorMotor.setVoltage(voltage);
+            // elevatorMotor.setVoltage(voltage);()
             // }, () -> {
             // elevatorMotor.setVoltage(0.0);
             // });
             // }
 
             /* Calculations */
-            public StatusSignal<Angle> getElevatorEncoder() {
-                return (elevatorMotor.getRotorPosition());
-            } gh
+            public double getElevatorEncoder () {
+                return (elevatorMotor.getRotorPosition().getValueAsDouble());  
+            }
+
 
         
 
