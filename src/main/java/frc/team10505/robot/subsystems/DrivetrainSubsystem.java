@@ -228,7 +228,12 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
             updateSimState(deltaTime, RobotController.getBatteryVoltage());
         });
         m_simNotifier.startPeriodic(kSimLoopPeriod);
+        
+    }{
+try{}
+    catch(Exception E){
+        DriverStation.reportError("Wrong", E.getStackTrace());
     }
 
 
-}
+}}

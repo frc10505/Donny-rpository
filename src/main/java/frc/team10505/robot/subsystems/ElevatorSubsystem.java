@@ -66,7 +66,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     /* commands to referense */
     // changes our setpoint, which changes our pid calcuations therefore effort to
     // the motor, which happens periodically
-    public Command setHeight(double newHeight) {
+    public static Command setHeight(double newHeight) {
         return runOnce(() -> {
             height = newHeight;
         });
