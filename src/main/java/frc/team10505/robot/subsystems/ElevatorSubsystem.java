@@ -11,11 +11,14 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.core.CoreTalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -66,38 +69,77 @@ public class ElevatorSubsystem extends SubsystemBase {
     /* commands to referense */
     // changes our setpoint, which changes our pid calcuations therefore effort to
     // the motor, which happens periodically
-    public static Command setHeight(double newHeight) {
-        return runOnce(() -> {
+    public Command setHeight(double newHeight) {
+        return Commands.runOnce(() -> {
             height = newHeight;
         });
     }
 
     public Command setMotor(double voltage){
-        return runOnce(() -> {
+        return Commands.runEnd(() -> {
                     usePID = false;
                     elevatorMotor.setVoltage(voltage);
-                });
+            },
+            () -> {
+                elevatorMotor.setVoltage(0);
+                usePID = true;
 
-            }
-
-            // ONLY to use for testing motor direction
-            // public Command testElevator(double voltage){
-            // return runEnd(() -> {
-            // elevatorMotor.setVoltage(voltage);()
-            // }, () -> {
-            // elevatorMotor.setVoltage(0.0);
-            // });
+            });
+    }       
+    // ONLY to use for testing motor direction
+    // public Command testElevator(double voltage){
+    // return runEnd(() -> {
+    // elevatorMotor.setVoltage(voltage);()
+    // }, () -> {
+    // elevatorMotor.setVoltage(0.0);
+    // });
             // }
 
-            /* Calculations */
-            public double getElevatorEncoder () {
-                return (elevatorMotor.getRotorPosition().getValueAsDouble());  
-            }
+    /* Calculations */
+    public double getElevatorEncoder() {
+        return (elevatorMotor.getRotorPosition().getValueAsDouble() * (Math.PI * 1.751 * 2) / 12.0) * -1.0;
+    }
 
-            // public boolean isNearGoal() {
+     public boolean isNearGoal() {
+        return MathUtil.isNear(height, getElevatorEncoder(), 2);
+    }
 
-            // }
-        }
+    public boolean issGigh () {
+        return getElevatorEncoder() > 30;
+    }
+
+    public boolean isAbove(double heightOfChoice){
+        return getElevatorEncoder() > heightOfChoice;
+    }
+
+    public double getEffort() {
+        return totalEffort = ((elevatorFeedforward.calculate(0, 0))
+                + (elevatorController.calculate(getElevatorEncoder(), height)));
+    }
+
+
+
+
+
+ public void periodic() {
+        elevatorEncoderValue = getElevatorEncoder();
+        totalEffort = getEffort();
+
+       // if(usePID){
+        elevatorMotor.setVoltage(totalEffort * -1.0);
+      //  }
+
+        SmartDashboard.putNumber("Elevator Encoder", elevatorEncoderValue);
+        SmartDashboard.putNumber("Elevator Effort", totalEffort);
+        SmartDashboard.putNumber("Elevator Height", height);
+        SmartDashboard.putBoolean("issGigh", issGigh());
+
+    }
+
+}
+
+
+
         
 
 

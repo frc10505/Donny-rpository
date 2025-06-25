@@ -11,14 +11,23 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team10505.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public class RobotContainer {
-private void configBindings(){
+
+
+
+private final CommandJoystick joyStick = new CommandJoystick(0);
+
+private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+
+
+
+
+    private void configBindings(){
 if (Utils.isSimulation()) {
-    Joystick.button(1).onTrue(ElevatorSubsystem.setHeight(5));
+    joyStick.button(1).onTrue(elevatorSubsystem.setHeight(5));
     
 } else {
-    Joystick.button(1).onTrue(ElevatorSubsystem.setHeight(5));
+    joyStick.button(1).onTrue(elevatorSubsystem.setHeight(5));
 
 }
 }
